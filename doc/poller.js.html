@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: poller.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: poller.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>define(function(require) {
+    'use strict';
+
+    var $ = require('$');
+    var log = require('log');
+
+    /** 
+     * Utilities for polling a function and URLs.
+     * @exports poller 
+     */
+    var module = {
+
+        /**
+         * Executes a function at a given interval
+         * 
+         * @param {integer} interval - the interval in milliseconds
+         * @param {Function} theFunction - the function to call
+         * 
+         */
+        pollFunction: function(interval, theFunction) {
+            if (!$.isFunction(theFunction)) {
+                return;
+            }
+            (function loopsiloop() {
+                setTimeout(function() {
+                    theFunction();
+                    // recurse
+                    loopsiloop();
+                }, interval);
+            }());
+        },
+
+        /**
+         * Sends a request to the provided URL on a set interval.
+         * 
+         * @param {Object}  options a list of options required for this function.
+         * @param {integer} options.interval - the interval in milliseconds.
+         * @param {String}  options.url - A string containing the URL to which the request is sent.
+         * @param {Object}  options.data - Either a function to be called to get data, a plain object or string to 
+         * send to the server with the request
+         * @param {Function} options.success - A callback function which is executed if the request succeeds.
+         * @param {Function} options.error - A callback function which is executed if the request fails.
+         * @param {String} options.dataType - he type of data expected from the server. Default: json
+         */
+        pollUrl: function(options) {
+            var interval = options.interval,
+                url = options.url,
+                data = options.data,
+                success = options.success,
+                error = options.error,
+                dataType = options.dataType;
+
+            if (!data) {
+                data = {};
+            }
+
+            if (!dataType) {
+                dataType = 'json';
+            }
+            (function loopsiloop() {
+                setTimeout(function() {
+                    var postData = {};
+                    if ($.isFunction(data)) {
+                        postData = data();
+                    }
+                    else {
+                        postData = data;
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        dataType: dataType,
+                        data: postData,
+                        success: function(response) {
+                            if ($.isFunction(success)) {
+                                success(response);
+                            }
+                            // recurse
+                            loopsiloop();
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            if ($.isFunction(error)) {
+                                error(jqXHR, textStatus, errorThrown);
+                            }
+                            // recurse
+                            loopsiloop();
+                            log.error('poll: errorThrown=' + errorThrown + 'textStatus=' + textStatus);
+                        }
+                    });
+                }, interval);
+            }());
+        }
+    };
+
+    return module;
+
+
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-$.html">$</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-dialog.html">dialog</a></li><li><a href="module-form.html">form</a></li><li><a href="module-log.html">log</a></li><li><a href="module-poller.html">poller</a></li><li><a href="module-select.html">select</a></li><li><a href="module-table.html">table</a></li><li><a href="module-tabs.html">tabs</a></li><li><a href="module-template.html">template</a></li><li><a href="module-text.html">text</a></li><li><a href="module-ui.html">ui</a></li><li><a href="module-util.html">util</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Apr 22 2016 15:25:00 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

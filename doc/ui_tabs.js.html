@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui/tabs.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ui/tabs.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>define(function(require) {
+    'use strict';
+
+    var $ = require('$');
+    var util = require('util');
+
+
+    // Workaround for "this" being undefined when used in the object literal "module" below
+    var getThis = function() {
+        return module;
+    };
+
+    /** 
+     * Utilities for handling JQuery tabs.
+     * @exports tabs 
+     */
+    var module = {
+
+        /**
+         * Add a new tab to an existing tab container.
+         * 
+         * @param {object}  options - a list of options required for this function
+         * @param {string}  options.tabContainerId - the id of the tab container to add the new tab to
+         * @param {string}  options.tabId - an id to give the new tab.  Has to be unique
+         * @param {string}  options.tabTitle - the text to display as the title of the tab
+         * @param {string}  options.tabContent - the content to display in the tab
+         * @param {boolean} [options.showCloseIcon] - true to show a "x" close icon.
+         * @param {string}  [options.closeTabText] - Text to display if there is a close icon
+         */
+        addTab: function(options) {
+            var tabContainerId = options.tabContainerId,
+                tabId = options.tabId,
+                tabTitle = options.tabTitle,
+                tabContent = options.tabContent,
+                showCloseIcon = options.showCloseIcon,
+                closeTabText = options.closeTabText;
+
+            var tabTemplate = '&lt;li>&lt;a id="tab-anchor-{id}" href="#{href}">{tabTitle}&lt;/a>{closeIcon}&lt;/li>';
+            var closeIconTemplate = '&lt;span tabIndex="0" class="ui-icon ui-icon-close">{closeText}&lt;/span>';
+
+            if (showCloseIcon) {
+                closeIconTemplate = closeIconTemplate.replace('{closeText}', closeTabText + ' ' + tabTitle);
+                tabTemplate = tabTemplate.replace('{closeIcon}', closeIconTemplate);
+            }
+            else {
+                tabTemplate = tabTemplate.replace('{closeIcon}', '');
+            }
+
+            var tabs = $(util.idAsSelector(tabContainerId));
+            var li = $(tabTemplate.replace('{id}', tabId).replace('{href}', tabId).replace('{tabTitle}', tabTitle));
+            tabs.find('.ui-tabs-nav').first().append(li);
+            tabs.append('&lt;div id="' + tabId + '">&lt;p>' + tabContent + '&lt;/p>&lt;/div>');
+            getThis().refresh(tabContainerId);
+        },
+
+        /**
+         * Add a new tab to an existing tab container using an AJAX call to get the content.
+         * 
+         * @param {object}  options - a list of options required for this function
+         * @param {string}  options.tabContainerId - the id of the tab container to add the new tab to
+         * @param {string}  options.tabId - an id to give the new tab.  Has to be unique
+         * @param {string}  options.tabTitle - the text to display as the title of the tab
+         * @param {string}  options.href - the URL to get the tab content from.
+         * @param {boolean} [options.showCloseIcon] - true to show a "x" close icon.
+         * @param {string}  [options.closeTabText] - Text to display if there is a close icon
+         */
+        addAjaxTab: function(options) {
+            var tabContainerId = options.tabContainerId,
+                tabId = options.tabId,
+                tabTitle = options.tabTitle,
+                href = options.href,
+                showCloseIcon = options.showCloseIcon,
+                closeTabText = options.closeTabText;
+
+            var tabTemplate = '&lt;li>&lt;a id="tab-anchor-{id}" href="{href}">{tabTitle}&lt;/a>{closeIcon}&lt;/li>';
+            var closeIconTemplate = '&lt;span tabIndex="0" class="ui-icon ui-icon-close">{closeText}&lt;/span>';
+
+            if (showCloseIcon) {
+                closeIconTemplate = closeIconTemplate.replace('{closeText}', closeTabText + ' ' + tabTitle);
+                tabTemplate = tabTemplate.replace('{closeIcon}', closeIconTemplate);
+            }
+            else {
+                tabTemplate = tabTemplate.replace('{closeIcon}', '');
+            }
+
+            var tabs = $(util.idAsSelector(tabContainerId));
+            var li = $(tabTemplate.replace('{id}', tabId).replace('{href}', href).replace('{tabTitle}', tabTitle));
+            tabs.find('.ui-tabs-nav').first().append(li);
+            getThis().refresh(tabContainerId);
+        },
+
+        renameTab: function(tabContainerId, tabId, title) {
+            tabContainerId = util.idAsSelector(tabContainerId);
+            var tabAnchor = $(tabContainerId + ' a[id="tab-anchor-' + tabId + '"]');
+            tabAnchor.html(title);
+        },
+
+        refresh: function(tabContainerId) {
+            tabContainerId = util.idAsSelector(tabContainerId);
+            var tabs = $(tabContainerId).tabs();
+            tabs.tabs('refresh');
+        },
+
+        getTabIndexById: function(tabContainerId, tabId) {
+            tabContainerId = util.idAsSelector(tabContainerId);
+            var tabAnchor = $(tabContainerId + ' a[id="tab-anchor-' + tabId + '"]');
+            if (tabAnchor.length === 0) {
+                return -1;
+            }
+
+            return tabAnchor.parent().index();
+        },
+
+        focusTab: function(tabContainerId, tabId) {
+            tabContainerId = util.idAsSelector(tabContainerId);
+            var tabAnchor = $(tabContainerId + ' a[id="tab-anchor-' + tabId + '"]');
+            tabAnchor.focus();
+        },
+
+        selectTab: function(tabContainerId, tabId) {
+            tabContainerId = util.idAsSelector(tabContainerId);
+            var tabIndex = getThis().getTabIndexById(tabContainerId, tabId);
+            var tabs = $(tabContainerId).tabs();
+            tabs.tabs('option', 'active', tabIndex);
+        },
+
+        addCloseFunctionToCloseIcon: function(tabContainerId) {
+            tabContainerId = util.idAsSelector(tabContainerId);
+            var tabs = $(tabContainerId).tabs();
+
+            // close icon: removing the tab on click
+            tabs.delegate('span.ui-icon-close', 'click', function() {
+                var panelId = $(this).closest('li').remove().attr('aria-controls');
+                $(util.idAsSelector(panelId)).remove();
+                getThis().refresh(tabContainerId);
+            });
+        },
+
+
+        closeTab: function(tabContainerId, tabId) {
+            var panelId = $(tabContainerId + ' a[id="tab-anchor-' + tabId + '"]').closest('li').remove().attr('aria-controls');
+            $('#' + panelId).remove();
+            getThis().refresh(tabContainerId);
+        },
+
+
+        getSelectedTabIndex: function(tabContainerId) {
+            tabContainerId = util.idAsSelector(tabContainerId);
+            return $(tabContainerId).tabs('option', 'active');
+        },
+
+        getSelectedTabId: function(tabContainerId) {
+            tabContainerId = util.idAsSelector(tabContainerId);
+            var index = getThis().getSelectedTabIndex(tabContainerId);
+            var id = ($(tabContainerId + ' ul>li a').eq(index).attr('href'));
+            return util.startsWith(id, '#') ? id.substring(1, id.lenght) : id;
+        }
+
+    };
+
+    return module;
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-$.html">$</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-dialog.html">dialog</a></li><li><a href="module-form.html">form</a></li><li><a href="module-log.html">log</a></li><li><a href="module-poller.html">poller</a></li><li><a href="module-select.html">select</a></li><li><a href="module-table.html">table</a></li><li><a href="module-tabs.html">tabs</a></li><li><a href="module-template.html">template</a></li><li><a href="module-text.html">text</a></li><li><a href="module-ui.html">ui</a></li><li><a href="module-util.html">util</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Apr 22 2016 15:25:00 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

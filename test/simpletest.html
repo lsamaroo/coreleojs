@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/xhtml; charset=utf-8"/>
+    <script type="text/javascript" src="../node_modules/jquery/dist/jquery.js"></script>    
+    <script type="text/javascript" src="../node_modules/lodash/lodash.js"></script>   
+    <script type="text/javascript" src="../node_modules/handlebars/dist/handlebars.js"></script>         
+    <script type="text/javascript" src="../dist/coreleo.js"></script>
+  </head>
+  <body>
+  	<input type="text" id="testfield" value="I should be disabled"></input>
+    <script>
+    	coreleo.ui.text.disable( 'testfield' );
+    	var input = coreleo.$( '#testfield');
+      	var val = input.val();
+      	input.val(  val  );
+      	
+      	var allIsWell = 'All is well';
+      	if( coreleo.util.isNotEmpty(allIsWell)){
+      		input.val( allIsWell );
+      	}
+
+    </script>
+  </body>
+</html>

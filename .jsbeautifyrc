@@ -1,0 +1,12 @@
+{
+	"js": {
+		"indentSize": 4,
+		"brace_style": "end-expand"
+	},
+	"css": {
+		"indentSize": 4
+	},
+	"html": {
+		"indentSize": 4
+	}
+}

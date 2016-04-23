@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/xhtml; charset=utf-8"/>
+    <script type="text/javascript" src="../node_modules/jquery/dist/jquery.js"></script>    
+    <script type="text/javascript" src="../node_modules/lodash/lodash.js"></script>   
+    <script type="text/javascript" src="../node_modules/handlebars/dist/handlebars.js"></script>         
+    <script type="text/javascript" src="../dist/coreleo.min.js"></script>
+  </head>
+  <body>
+  	<input type="text" id="testfield" value="I should be disabled"></input>
+    <script>
+    	coreleo.ui.text.disable( 'testfield' );
+      	var val = coreleo.$( '#testfield').val();
+      	coreleo.$( '#testfield').val( coreleo.util.properCase( val ) );
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "name": "coreleo",
+  "title": "coreleo javascript utilities",
+  "description": "A bunch of utility function extending off of lodash and jquery",
+  "version": "0.0.1",
+  "main": "main.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lsamaroo/coreleo.git"
+  },
+  "keywords": [
+    "libary", "jquery", "lodash"
+  ],
+  "author": "Leon Samaroo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lsamaroo/coreleo/issues"
+  },
+  "homepage": "https://github.com/lsamaroo/coreleo",
+  "dependencies": {
+    "jquery": ">=1.12.1",
+    "lodash": ">=4.5.1",
+    "handlebars": ">=4.0.5" 
+  },
+  "devDependencies": {
+    "gulp": ">=3.9.1",
+    "gulp-sequence": ">=0.4.1",    
+    "gulp-eslint": ">=2.0.0",
+    "gulp-jsbeautifier": ">=1.0.2",
+    "requirejs": ">=2.1.22",
+    "almond": ">=0.3.1",
+    "gulp-shell": ">=0.5.2",
+    "jsdoc": ">=3.4.0",
+    "gulp-jshint": ">=2.0.0",
+    "jshint-stylish": ">=2.1.0" ,
+    "gulp-qunit": ">=1.4.0"
+  }
+}
