@@ -1,9 +1,9 @@
 {
   "name": "coreleo",
   "title": "coreleo javascript utilities",
-  "description": "A bunch of utility function extending off of lodash and jquery",
+  "description": "A javascript library for working with strings, array, objects, etc. as well with JQuery UI and JQuery Mobile",
   "version": "0.0.1",
-  "main": "main.js",
+  "main": "dist/coreleo.js",
   "directories": {
     "test": "test"
   },

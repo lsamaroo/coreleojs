@@ -1,0 +1,9 @@
+.settings
+test
+.gitignore
+.npmignore
+.project
+bower.json
+changelog.txt
+package.json
+node_modules

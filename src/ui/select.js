@@ -27,21 +27,32 @@ define(function(require) {
         }
     };
 
+    var isSelect2 = function(selector) {
+        var $el = util.idAsSelector(selector);
+        return !mobile.isMobile() && $el.select2;
+    };
+
     /** 
      * Utilities for handling JQuery mobile and select2 select.
      * @exports select 
      */
     var module = {
 
+
+
         /**
          * Refreshes the select drop down after items have been added and removed.
          * For mobile select items it assumes JQuery mobile is being used.
          * 
-         * @param {String} id the id of the select item
+         * @param {String} selector the selector of the drop down element
          * 
          */
-        refresh: function(id) {
-            mobile.refreshSelect(id);
+        refresh: function(selector) {
+            mobile.refreshSelect(selector);
+            var $el = $(util.idAsSelector(selector));
+            if (isSelect2()) {
+                $el.trigger('change.select2');
+            }
         },
 
 
@@ -49,15 +60,29 @@ define(function(require) {
          * Initializes a select2 drop down for non-mobile browsers if select2 is available.
          * Can be safely called on mobile browser as it will have no effect.
          * 
-         * @param {string} id the id of the element
+         * @param {string} selector - the selector of the element
          * @param {object} options a set of options to pass to the select2 drop down
          */
-        initSelect2: function(id, options) {
-            var $el = $(util.idAsSelector(id));
-            if (!mobile.isMobile() && $el.select2) {
+        initSelect2: function(selector, options) {
+            var $el = $(util.idAsSelector(selector));
+            if (isSelect2()) {
                 select2DialogFix();
                 $el.select2(options);
             }
+        },
+
+        val: function(selector, value) {
+            var $el = $(util.idAsSelector(selector));
+            if (!value) {
+                return $el.val();
+            }
+            else {
+                $el.val(value);
+                if (isSelect2()) {
+                    $el.trigger('change.select2');
+                }
+            }
+
         }
     };
 

@@ -5,8 +5,8 @@ define(function(require) {
     var _ = require('lodash');
     var log = require('log');
 
-
-    // Workaround for "this" being undefined when used in the object literal "module" below
+    // Workaround for "this" being undefined when used in the object literal
+    // "module" below
     var getThis = function() {
         return module;
     };
@@ -26,71 +26,93 @@ define(function(require) {
         return getThis().startsWith(cssClass, '.');
     };
 
+    /**
+     * Checks if the string is a valid JQuery selector
+     * 
+     * @param {string}
+     *            selector - the selector to check.
+     * @return {boolean} true if a valid selector false otherwise.
+     */
 
-    /** 
-     * Generic utilities for dealing with strings, objects, etc.  It is built on top of the lodash libary. 
-     * @see the [lodash API] @link https://lodash.com/docs for additional functions that you have access to via this class
-     * @exports util 
+    var isValidSelector = function(selector) {
+        try {
+            $(selector);
+        }
+        catch (error) {
+            return false;
+        }
+        return true;
+    };
+
+    /**
+     * Generic utilities for dealing with strings, objects, etc. It is built on
+     * top of the lodash libary.
+     * 
+     * @see the [lodash API]
+     * @link https://lodash.com/docs for additional functions that you have
+     *       access to via this class
+     * @exports util
      */
     var module = {
 
+
         /**
-         * Checks if the string is a valid JQuery selector
-         * 
-         * @param {string}  selector - the selector to check.
-         * @return {boolean} true if a valid selector false otherwise.
+         * Prints a deprecated message to the console. Used to warn the user
+         * that a function is deprecated
          */
-
-        isValidSelector: function(selector) {
-            try {
-                $(selector);
-            }
-            catch (error) {
-                return false;
-            }
-            return true;
-        },
-
         deprecated: function() {
             log.warn('This function has been deprecated and will not be supported in future releases.  See documentation.');
         },
 
         /**
-         * Checks to see if the argument is empty.  Empty is considered null, undefined, the string 'null', an empty string or
-         * an array of length zero.
+         * Checks to see if the item is empty. Empty is considered null,
+         * undefined, the string 'null', an empty string or an array of length
+         * zero.
          * 
-         * @param {(string|Array|Object)} item the item to check
+         * @param {(string|Array|Object)}
+         *            item - the item to check
          * @return true if empty, false otherwise.
          */
-        /*jshint eqnull:true */
+        /* jshint eqnull:true */
         /* eslint eqeqeq:0 no-eq-null:0 */
         isEmpty: function(item) {
-            return (
-                item == null || item === null ||
-                item === undefined ||
-                typeof item === 'undefined' ||
-                $.trim(item) === 'null' ||
-                $.trim(item) === '' ||
-                ($.isArray(item) && item.length === 0)
-            );
+            return (item == null || item === null || item === undefined || typeof item === 'undefined' || $.trim(item) === 'null' || $.trim(item) === '' || ($.isArray(item) && item.length === 0));
         },
 
+        /**
+         * Checks to see if the item is not empty.
+         * 
+         * @param {(string|Array|Object)}
+         *            item - the item to check
+         * @return {boolean} true if not empty, false otherwise.
+         */
         isNotEmpty: function(item) {
             return !getThis().isEmpty(item);
         },
 
-        startsWith: function(str, ch, position) {
+        /**
+         * Checks if string starts with the given target string.
+         * 
+         * @param {string}
+         *            string - The string to search
+         * @param {string}
+         *            target - The string to search for
+         * @param {number}
+         *            [position=0] - The position to search from
+         * @return {boolean} true if string starts with target, false otherwise.
+         */
+        startsWith: function(string, target, position) {
             if (!position) {
                 position = 0;
             }
-            return _.startsWith(str, ch, position);
+            return _.startsWith(string, target, position);
         },
 
-        replaceCharAt: function(str, index, chr) {
-            if (index > str.length - 1) {
-                return str;
+        replaceCharAt: function(string, index, char) {
+            if (index > string.length - 1) {
+                return string;
             }
-            return str.substr(0, index) + chr + str.substr(index + 1);
+            return string.substr(0, index) + char + string.substr(index + 1);
         },
 
         formatPhone: function(phone) {
@@ -99,7 +121,6 @@ define(function(require) {
             }
             return '(' + phone.substr(0, 3) + ') ' + phone.substr(3, 3) + '-' + phone.substr(6, 4);
         },
-
 
         formatCurrency: function(amount) {
             var i = parseFloat(amount);
@@ -124,12 +145,14 @@ define(function(require) {
             return s;
         },
 
-
         /**
-         * If the string is null it returns a empty string otherwise returns the string
+         * If the string is null it returns a empty string otherwise returns the
+         * string
          * 
-         * @param {String} string the string to check
-         * @return {String} A empty string if the parameter was null or undefined otherwise the parameter
+         * @param {String}
+         *            string the string to check
+         * @return {String} A empty string if the parameter was null or
+         *         undefined otherwise the parameter
          */
         blankNull: function(string) {
             if (getThis().isEmpty(string)) {
@@ -139,7 +162,6 @@ define(function(require) {
                 return string;
             }
         },
-
 
         toBoolean: function(str) {
             if (getThis().isEmpty(str)) {
@@ -154,7 +176,6 @@ define(function(require) {
             return false;
         },
 
-
         isTrue: function(str) {
             return getThis().toBoolean(str);
         },
@@ -166,8 +187,10 @@ define(function(require) {
         /**
          * Left pads the given string with zeros to fill the size specified
          * 
-         * @param {String} string the String to pad
-         * @param {Integer} size the number of zeros to pad
+         * @param {String}
+         *            string the String to pad
+         * @param {Integer}
+         *            size the number of zeros to pad
          * 
          * @return {String} the string with padded zeros
          * 
@@ -181,29 +204,20 @@ define(function(require) {
             return _.padStart(string, (size - string.length), '0');
         },
 
-
         idAsSelector: function(id) {
+            if (id && id.jquery) {
+                return id;
+            }
+
             if (getThis().isEmpty(id)) {
                 return '';
             }
 
             id = id.trim();
-            if (isIdSelector(id) || isClassSelector(id)) {
+            if (isIdSelector(id) || isClassSelector(id) || isValidSelector(id)) {
                 return id;
             }
             return '#' + id;
-        },
-
-        classAsSelector: function(cssClass) {
-            if (getThis().isEmpty(cssClass)) {
-                return '';
-            }
-
-            cssClass = cssClass.trim();
-            if (isIdSelector(cssClass) || isClassSelector(cssClass)) {
-                return cssClass;
-            }
-            return '.' + cssClass;
         },
 
         contains: function(str, subString) {
@@ -237,14 +251,12 @@ define(function(require) {
             return str.replace(/(\r\n|\n|\r)/gm, '');
         },
 
-
         trimWhiteSpaceChar: function(str) {
             if (getThis().isEmpty(str)) {
                 return '';
             }
             return str.replace(/(\s)/gm, '');
         },
-
 
         redirectAsHttpPost: function(location, args, target) {
             if (!target) {
@@ -267,34 +279,36 @@ define(function(require) {
             $(dynamicForm).appendTo($(document.body)).submit();
         },
 
-
         hasWhiteSpace: function(s) {
             return (/\s/g.test(s));
         },
 
-
         /**
          * Converts the provided string to proper case
-         * @param {String} str the string to convert
+         * 
+         * @param {String}
+         *            string - the string to convert
          * @return {String} the string in proper case
          */
-        properCase: function(str) {
-            if (getThis().isEmpty(str)) {
+        properCase: function(string) {
+            if (getThis().isEmpty(string)) {
                 return '';
             }
-            str = str.toLowerCase();
-            return str.replace(/\b[a-z]/g, function(f) {
+            string = string.toLowerCase();
+            return string.replace(/\b[a-z]/g, function(f) {
                 return f.toUpperCase();
             });
         },
 
-
         /**
          * Adds a parameter and value to an existing URL.
          * 
-         * @param {String} url the URL to append to
-         * @param {String} name the name of the parameter
-         * @param {String} value the value of the parameter
+         * @param {String}
+         *            url - the URL to append to
+         * @param {String}
+         *            name the name of the parameter
+         * @param {String}
+         *            value the value of the parameter
          * @return {String} the url with the given parameter appended
          * 
          */
@@ -307,11 +321,9 @@ define(function(require) {
             return url + seperator + encodeURIComponent(name) + '=' + encodeURIComponent(value);
         },
 
-
-        getParameterFromUrl: function(urlString, name) {
-            return (urlString.split('' + name + '=')[1] || '').split('&')[0];
+        getParameterFromUrl: function(url, name) {
+            return (url.split('' + name + '=')[1] || '').split('&')[0];
         },
-
 
         toKeyValueHash: function(key, value) {
             return {
@@ -319,7 +331,6 @@ define(function(require) {
                 'value': value
             };
         }
-
 
     };
 

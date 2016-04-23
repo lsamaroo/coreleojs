@@ -6,13 +6,15 @@ For example calling dialog.open on a browser will display a dialog but in mobile
 
 
 ### How do I get set up? ###
-#### Javascript ####
-* Run npm gulp to create the optimized js file.
+* I not already installed install NPM.
+* Install gulp
+* Run npm install
+* Run gulp to compile
 
 ### How do use it? ###
 * Take a look at the jsdoc in the doc/ directory.  
 All of the modules listed can be executed as "coreleo.<module name>.<function name>"
 
 
-### Who do I talk to? ###
+### Issues?, who can I talk to? ###
 * orrinsamaroo@gmail.com
