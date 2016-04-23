@@ -6,7 +6,7 @@ For example calling dialog.open on a browser will display a dialog but in mobile
 
 
 ### How do I get set up? ###
-* I not already installed install NPM.
+* If not already installed then install [NPM](https://www.npmjs.com/)
 * Install gulp
 * Run npm install
 * Run gulp to compile
