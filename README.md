@@ -11,9 +11,7 @@ For example calling dialog.open on a browser will display a dialog but in mobile
 
 ### How do use it? ###
 * Take a look at the jsdoc in the doc/ directory.  
-All of the modules listed can be executed as
-<br>
-"coreleo.<module name>.<function name>"
+All of the modules listed can be executed as "coreleo.<module name>.<function name>"
 
 
 ### Who do I talk to? ###
