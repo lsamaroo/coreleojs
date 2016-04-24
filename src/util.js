@@ -214,7 +214,7 @@ define(function(require) {
             }
 
             id = id.trim();
-            if (isIdSelector(id) || isClassSelector(id) || isValidSelector(id)) {
+            if (isValidSelector(id) && (isIdSelector(id) || isClassSelector(id))) {
                 return id;
             }
             return '#' + id;

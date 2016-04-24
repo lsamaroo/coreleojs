@@ -242,7 +242,7 @@
             }
 
             id = id.trim();
-            if (isIdSelector(id) || isClassSelector(id) || isValidSelector(id)) {
+            if (isValidSelector(id) &amp;&amp; (isIdSelector(id) || isClassSelector(id))) {
                 return id;
             }
             return '#' + id;
