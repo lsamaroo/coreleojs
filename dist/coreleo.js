@@ -1372,6 +1372,15 @@ define('ui/tabs',['require','$','util'],function(require) {
         return module;
     };
 
+
+    var addCloseListener = function(tabContainerId, $el) {
+        $('span.ui-icon-close', $el).on('click', function() {
+            var panelId = $(this).closest('li').remove().attr('aria-controls');
+            $(util.idAsSelector(panelId)).remove();
+            getThis().refresh(tabContainerId);
+        });
+    };
+
     /** 
      * Utilities for handling JQuery tabs.
      * @exports tabs 
@@ -1409,10 +1418,14 @@ define('ui/tabs',['require','$','util'],function(require) {
             }
 
             var tabs = $(util.idAsSelector(tabContainerId));
-            var li = $(tabTemplate.replace('{id}', tabId).replace('{href}', tabId).replace('{tabTitle}', tabTitle));
-            tabs.find('.ui-tabs-nav').first().append(li);
+            var $li = $(tabTemplate.replace('{id}', tabId).replace('{href}', tabId).replace('{tabTitle}', tabTitle));
+            tabs.find('.ui-tabs-nav').first().append($li);
             tabs.append('<div id="' + tabId + '"><p>' + tabContent + '</p></div>');
             getThis().refresh(tabContainerId);
+
+            if (showCloseIcon) {
+                addCloseListener(tabContainerId, $li);
+            }
         },
 
         /**
@@ -1446,10 +1459,15 @@ define('ui/tabs',['require','$','util'],function(require) {
             }
 
             var tabs = $(util.idAsSelector(tabContainerId));
-            var li = $(tabTemplate.replace('{id}', tabId).replace('{href}', href).replace('{tabTitle}', tabTitle));
-            tabs.find('.ui-tabs-nav').first().append(li);
+            var $li = $(tabTemplate.replace('{id}', tabId).replace('{href}', href).replace('{tabTitle}', tabTitle));
+            tabs.find('.ui-tabs-nav').first().append($li);
             getThis().refresh(tabContainerId);
+
+            if (showCloseIcon) {
+                addCloseListener(tabContainerId, $li);
+            }
         },
+
 
         renameTab: function(tabContainerId, tabId, title) {
             tabContainerId = util.idAsSelector(tabContainerId);
@@ -1485,19 +1503,6 @@ define('ui/tabs',['require','$','util'],function(require) {
             var tabs = $(tabContainerId).tabs();
             tabs.tabs('option', 'active', tabIndex);
         },
-
-        addCloseFunctionToCloseIcon: function(tabContainerId) {
-            tabContainerId = util.idAsSelector(tabContainerId);
-            var tabs = $(tabContainerId).tabs();
-
-            // close icon: removing the tab on click
-            tabs.delegate('span.ui-icon-close', 'click', function() {
-                var panelId = $(this).closest('li').remove().attr('aria-controls');
-                $(util.idAsSelector(panelId)).remove();
-                getThis().refresh(tabContainerId);
-            });
-        },
-
 
         closeTab: function(tabContainerId, tabId) {
             var panelId = $(tabContainerId + ' a[id="tab-anchor-' + tabId + '"]').closest('li').remove().attr('aria-controls');
