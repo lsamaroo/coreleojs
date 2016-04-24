@@ -50,7 +50,7 @@ define(function(require) {
         refresh: function(selector) {
             mobile.refreshSelect(selector);
             var $el = $(util.idAsSelector(selector));
-            if (isSelect2()) {
+            if (isSelect2($el)) {
                 $el.trigger('change.select2');
             }
         },
@@ -65,7 +65,7 @@ define(function(require) {
          */
         initSelect2: function(selector, options) {
             var $el = $(util.idAsSelector(selector));
-            if (isSelect2()) {
+            if (isSelect2($el)) {
                 select2DialogFix();
                 $el.select2(options);
             }
@@ -78,7 +78,7 @@ define(function(require) {
             }
             else {
                 $el.val(value);
-                if (isSelect2()) {
+                if (isSelect2($el)) {
                     $el.trigger('change.select2');
                 }
             }
