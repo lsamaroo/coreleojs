@@ -1,5 +1,5 @@
 /** 
- * A class of Constants
+ * A class of generic constants
  * @module constants 
  */
 define(function(require) {

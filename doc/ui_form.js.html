@@ -31,6 +31,7 @@
 
     var $ = require('$');
     var util = require('util');
+    var cssConstants = require('ui/cssConstants');
 
     /** 
      * Utilities for handling form and form inputs.
@@ -42,6 +43,7 @@
          */
         enable: function(id) {
             var item = $(util.idAsSelector(id));
+            item.removeClass(cssConstants.CL_DISABLED);
             item.prop('disabled', false);
         },
 
@@ -57,6 +59,7 @@
         disable: function(id, milliseconds) {
             var item = $(util.idAsSelector(id));
             item.prop('disabled', true);
+            item.addClass(cssConstants.DISABLED);
 
             if (util.isNotEmpty(milliseconds)) {
                 setTimeout(function() {
@@ -79,7 +82,7 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-$.html">$</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-dialog.html">dialog</a></li><li><a href="module-form.html">form</a></li><li><a href="module-log.html">log</a></li><li><a href="module-poller.html">poller</a></li><li><a href="module-select.html">select</a></li><li><a href="module-table.html">table</a></li><li><a href="module-tabs.html">tabs</a></li><li><a href="module-template.html">template</a></li><li><a href="module-text.html">text</a></li><li><a href="module-ui.html">ui</a></li><li><a href="module-util.html">util</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-$.html">$</a></li><li><a href="module-constants.html">constants</a></li><li><a href="module-cssConstants.html">cssConstants</a></li><li><a href="module-dialog.html">dialog</a></li><li><a href="module-form.html">form</a></li><li><a href="module-log.html">log</a></li><li><a href="module-poller.html">poller</a></li><li><a href="module-select.html">select</a></li><li><a href="module-table.html">table</a></li><li><a href="module-tabs.html">tabs</a></li><li><a href="module-template.html">template</a></li><li><a href="module-text.html">text</a></li><li><a href="module-ui.html">ui</a></li><li><a href="module-util.html">util</a></li></ul>
 </nav>
 
 <br class="clear">

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: constants.js</title>
+    <title>JSDoc: Source: ui/cssConstants.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: constants.js</h1>
+    <h1 class="page-title">Source: ui/cssConstants.js</h1>
 
     
 
@@ -27,25 +27,19 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/** 
- * A class of generic constants
- * @module constants 
+ * A class of css constants for use in UI elements
+ * @module cssConstants 
  */
 define(function(require) {
     'use strict';
 
     return {
         /** 
-         * One second in milliseconds
-         * @constant {number}
+         * Class to add to disabled ui elements
+         * @constant {string}
          */
-        ONE_SECOND: 1000,
+        DISABLED: 'cljs-disabled'
 
-
-        /** 
-         * One minute in milliseconds
-         * @constant {number}
-         */
-        ONE_MINUTE: 60000
     };
 
 });</code></pre>

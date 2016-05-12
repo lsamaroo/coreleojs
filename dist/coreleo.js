@@ -812,7 +812,7 @@ define('util',['require','$','lodash','log'],function(require) {
     return _.assign({}, _, module);
 });
 /** 
- * A class of Constants
+ * A class of generic constants
  * @module constants 
  */
 define('constants',['require'],function(require) {
@@ -909,11 +909,29 @@ define('ui/mobile',['require','$','util'],function(require) {
     };
     return module;
 });
-define('ui/form',['require','$','util'],function(require) {
+/** 
+ * A class of css constants for use in UI elements
+ * @module cssConstants 
+ */
+define('ui/cssConstants',['require'],function(require) {
+    'use strict';
+
+    return {
+        /** 
+         * Class to add to disabled ui elements
+         * @constant {string}
+         */
+        DISABLED: 'cljs-disabled'
+
+    };
+
+});
+define('ui/form',['require','$','util','ui/cssConstants'],function(require) {
     'use strict';
 
     var $ = require('$');
     var util = require('util');
+    var cssConstants = require('ui/cssConstants');
 
     /** 
      * Utilities for handling form and form inputs.
@@ -925,6 +943,7 @@ define('ui/form',['require','$','util'],function(require) {
          */
         enable: function(id) {
             var item = $(util.idAsSelector(id));
+            item.removeClass(cssConstants.CL_DISABLED);
             item.prop('disabled', false);
         },
 
@@ -940,6 +959,7 @@ define('ui/form',['require','$','util'],function(require) {
         disable: function(id, milliseconds) {
             var item = $(util.idAsSelector(id));
             item.prop('disabled', true);
+            item.addClass(cssConstants.DISABLED);
 
             if (util.isNotEmpty(milliseconds)) {
                 setTimeout(function() {

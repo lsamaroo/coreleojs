@@ -3,6 +3,7 @@ define(function(require) {
 
     var $ = require('$');
     var util = require('util');
+    var cssConstants = require('ui/cssConstants');
 
     /** 
      * Utilities for handling form and form inputs.
@@ -14,6 +15,7 @@ define(function(require) {
          */
         enable: function(id) {
             var item = $(util.idAsSelector(id));
+            item.removeClass(cssConstants.CL_DISABLED);
             item.prop('disabled', false);
         },
 
@@ -29,6 +31,7 @@ define(function(require) {
         disable: function(id, milliseconds) {
             var item = $(util.idAsSelector(id));
             item.prop('disabled', true);
+            item.addClass(cssConstants.DISABLED);
 
             if (util.isNotEmpty(milliseconds)) {
                 setTimeout(function() {
