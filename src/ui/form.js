@@ -15,7 +15,7 @@ define(function(require) {
          */
         enable: function(id) {
             var item = $(util.idAsSelector(id));
-            item.removeClass(cssConstants.CL_DISABLED);
+            item.removeClass(cssConstants.DISABLED_CLASS);
             item.prop('disabled', false);
         },
 
@@ -31,7 +31,7 @@ define(function(require) {
         disable: function(id, milliseconds) {
             var item = $(util.idAsSelector(id));
             item.prop('disabled', true);
-            item.addClass(cssConstants.DISABLED);
+            item.addClass(cssConstants.DISABLED_CLASS);
 
             if (util.isNotEmpty(milliseconds)) {
                 setTimeout(function() {

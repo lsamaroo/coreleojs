@@ -4,6 +4,7 @@ define(function(require) {
     var $ = require('$');
     var ui = require('ui');
     var util = require('util');
+    var cssConstants = require('ui/cssConstants');
 
     var CONFIRM_DIALOG_TMPL = '<div data-role="popup" data-shadow="false" data-dismissible="false"';
     CONFIRM_DIALOG_TMPL = CONFIRM_DIALOG_TMPL + 'id="my-confirm-dialog" ';
@@ -44,7 +45,7 @@ define(function(require) {
         template = template.replace('{iconClass}', iconClass);
 
         var $el = $(template);
-        $('.save', $el).click(function(eventObject) {
+        $('.save', $el).click(function() {
             successFunction($el);
             closeDialogOrPopup('#my-confirm-dialog');
             destroyDialogOrPopup('#my-confirm-dialog');
@@ -222,7 +223,7 @@ define(function(require) {
             }
 
             if (util.isEmpty(loadingImageClass)) {
-                loadingImageClass = 'loading-image';
+                loadingImageClass = cssConstants.LOADING_DIALOG_IMAGE_CLASS;
             }
 
             var template = LOADING_DIALOG_TMPL;
