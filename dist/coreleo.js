@@ -1074,8 +1074,10 @@ define('ui/form',['require','$','util','ui/select','ui/cssConstants'],function(r
          * @param {string} selector - the id or selector of the element to disable
          */
         reset: function(selector) {
-            select.reset(selector);
             var $el = $(util.idAsSelector(selector));
+            $('select', $el).each(function() {
+                select.reset($(this));
+            });
             $el[0].reset();
         },
 
