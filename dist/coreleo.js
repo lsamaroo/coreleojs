@@ -997,18 +997,21 @@ define('ui/select',['require','$','util','ui/mobile'],function(require) {
             }
         },
 
+        /**
+         * Sets or gets the value of the select
+         * @param {string} selector - the selector of the element
+         * @param {string} [value] - the value to set
+         * @return {string} the value of the select
+         */
         val: function(selector, value) {
             var $el = $(util.idAsSelector(selector));
-            if (!value) {
-                return $el.val();
-            }
-            else {
+            if (typeof value !== 'undefined') {
                 $el.val(value);
                 if (isSelect2($el)) {
                     $el.trigger('change.select2');
                 }
             }
-
+            return $el.val();
         }
     };
 
