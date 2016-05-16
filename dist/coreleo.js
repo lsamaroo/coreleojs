@@ -909,6 +909,114 @@ define('ui/mobile',['require','$','util'],function(require) {
     };
     return module;
 });
+define('ui/select',['require','$','util','ui/mobile'],function(require) {
+    'use strict';
+
+    var $ = require('$');
+    var util = require('util');
+    var mobile = require('ui/mobile');
+
+
+    /*
+     * Fix to allow Select2 dropdown to work properly in jquery UI dialog
+     * This should only be called once
+     */
+    var select2DialogFixLoaded = false;
+
+    /* eslint no-underscore-dangle: 0 */
+    var select2DialogFix = function() {
+        if (!select2DialogFixLoaded && $.ui && $.ui.dialog && $.ui.dialog.prototype._allowInteraction) {
+            var uiDialogInteraction = $.ui.dialog.prototype._allowInteraction;
+            $.ui.dialog.prototype._allowInteraction = function(e) {
+                if ($(e.target).closest('.select2-dropdown').length) {
+                    return true;
+                }
+                return uiDialogInteraction.apply(this, arguments);
+            };
+
+            select2DialogFixLoaded = true;
+        }
+    };
+
+    var isSelect2 = function(selector) {
+        var $el = util.idAsSelector(selector);
+        return !mobile.isMobile() && $el.select2;
+    };
+
+    /** 
+     * Utilities for handling JQuery mobile and select2 select.
+     * @exports select 
+     */
+    var module = {
+
+        /**
+         * Resets the select drop down to the first item
+         * 
+         * @param {String} selector the selector of the drop down element
+         * 
+         */
+        reset: function(selector) {
+            var $el = $(util.idAsSelector(selector));
+            if (isSelect2($el)) {
+                $el.select2('data', $el.find('option')[0]);
+                $el.trigger('change.select2');
+            }
+            else {
+                $el.prop('selectedIndex', 0);
+            }
+        },
+
+        /**
+         * Refreshes the select drop down after items have been added and removed.
+         * For mobile select items it assumes JQuery mobile is being used.
+         * 
+         * @param {String} selector the selector of the drop down element
+         * 
+         */
+        refresh: function(selector) {
+            mobile.refreshSelect(selector);
+            var $el = $(util.idAsSelector(selector));
+            if (isSelect2($el)) {
+                $el.trigger('change.select2');
+            }
+        },
+
+
+        /**
+         * Initializes a select2 drop down for non-mobile browsers if select2 is available.
+         * Can be safely called on mobile browser as it will have no effect.
+         * 
+         * @param {string} selector - the selector of the element
+         * @param {object} options a set of options to pass to the select2 drop down
+         */
+        initSelect2: function(selector, options) {
+            var $el = $(util.idAsSelector(selector));
+            if (isSelect2($el)) {
+                select2DialogFix();
+                $el.select2(options);
+            }
+        },
+
+        val: function(selector, value) {
+            var $el = $(util.idAsSelector(selector));
+            if (!value) {
+                return $el.val();
+            }
+            else {
+                $el.val(value);
+                if (isSelect2($el)) {
+                    $el.trigger('change.select2');
+                }
+            }
+
+        }
+    };
+
+
+    return module;
+
+
+});
 /** 
  * A class of css constants for use in UI elements
  * @module cssConstants 
@@ -946,11 +1054,12 @@ define('ui/cssConstants',['require'],function(require) {
     };
 
 });
-define('ui/form',['require','$','util','ui/cssConstants'],function(require) {
+define('ui/form',['require','$','util','ui/select','ui/cssConstants'],function(require) {
     'use strict';
 
     var $ = require('$');
     var util = require('util');
+    var select = require('ui/select');
     var cssConstants = require('ui/cssConstants');
 
     /** 
@@ -958,32 +1067,46 @@ define('ui/form',['require','$','util','ui/cssConstants'],function(require) {
      * @exports form 
      */
     var module = {
+
         /**
-         * @param {string} id - the id or selector of the element to disable
+         * Resets a form 
+         * 
+         * @param {string} selector - the id or selector of the element to disable
          */
-        enable: function(id) {
-            var item = $(util.idAsSelector(id));
-            item.removeClass(cssConstants.DISABLED_CLASS);
-            item.prop('disabled', false);
+        reset: function(selector) {
+            select.reset(selector);
+            var $el = $(util.idAsSelector(selector));
+            $el[0].reset();
+        },
+
+        /**
+         * Enables a form element if disabled
+         * 
+         * @param {string} selector - the id or selector of the element to disable
+         */
+        enable: function(selector) {
+            var $el = $(util.idAsSelector(selector));
+            $el.removeClass(cssConstants.DISABLED_CLASS);
+            $el.prop('disabled', false);
         },
 
         /**
          * 
          * Disable the element and optionally re-enables it after a specific number of milliseconds.
          * 
-         * @param {string} id - the id or selector of the element to disable
+         * @param {string} selector - the id or selector of the element to disable
          * @param {int} [milliseconds] - an optional time in milliseconds before re-enabling it 
          * before re-enabling it.
          * 
          */
-        disable: function(id, milliseconds) {
-            var item = $(util.idAsSelector(id));
-            item.prop('disabled', true);
-            item.addClass(cssConstants.DISABLED_CLASS);
+        disable: function(selector, milliseconds) {
+            var $el = $(util.idAsSelector(selector));
+            $el.prop('disabled', true);
+            $el.addClass(cssConstants.DISABLED_CLASS);
 
             if (util.isNotEmpty(milliseconds)) {
                 setTimeout(function() {
-                    module.enable(id);
+                    module.enable(selector);
                 }, milliseconds);
             }
         }
@@ -1565,99 +1688,6 @@ define('ui/tabs',['require','$','util'],function(require) {
     };
 
     return module;
-});
-define('ui/select',['require','$','util','ui/mobile'],function(require) {
-    'use strict';
-
-    var $ = require('$');
-    var util = require('util');
-    var mobile = require('ui/mobile');
-
-
-    /*
-     * Fix to allow Select2 dropdown to work properly in jquery UI dialog
-     * This should only be called once
-     */
-    var select2DialogFixLoaded = false;
-
-    /* eslint no-underscore-dangle: 0 */
-    var select2DialogFix = function() {
-        if (!select2DialogFixLoaded && $.ui && $.ui.dialog && $.ui.dialog.prototype._allowInteraction) {
-            var uiDialogInteraction = $.ui.dialog.prototype._allowInteraction;
-            $.ui.dialog.prototype._allowInteraction = function(e) {
-                if ($(e.target).closest('.select2-dropdown').length) {
-                    return true;
-                }
-                return uiDialogInteraction.apply(this, arguments);
-            };
-
-            select2DialogFixLoaded = true;
-        }
-    };
-
-    var isSelect2 = function(selector) {
-        var $el = util.idAsSelector(selector);
-        return !mobile.isMobile() && $el.select2;
-    };
-
-    /** 
-     * Utilities for handling JQuery mobile and select2 select.
-     * @exports select 
-     */
-    var module = {
-
-
-
-        /**
-         * Refreshes the select drop down after items have been added and removed.
-         * For mobile select items it assumes JQuery mobile is being used.
-         * 
-         * @param {String} selector the selector of the drop down element
-         * 
-         */
-        refresh: function(selector) {
-            mobile.refreshSelect(selector);
-            var $el = $(util.idAsSelector(selector));
-            if (isSelect2($el)) {
-                $el.trigger('change.select2');
-            }
-        },
-
-
-        /**
-         * Initializes a select2 drop down for non-mobile browsers if select2 is available.
-         * Can be safely called on mobile browser as it will have no effect.
-         * 
-         * @param {string} selector - the selector of the element
-         * @param {object} options a set of options to pass to the select2 drop down
-         */
-        initSelect2: function(selector, options) {
-            var $el = $(util.idAsSelector(selector));
-            if (isSelect2($el)) {
-                select2DialogFix();
-                $el.select2(options);
-            }
-        },
-
-        val: function(selector, value) {
-            var $el = $(util.idAsSelector(selector));
-            if (!value) {
-                return $el.val();
-            }
-            else {
-                $el.val(value);
-                if (isSelect2($el)) {
-                    $el.trigger('change.select2');
-                }
-            }
-
-        }
-    };
-
-
-    return module;
-
-
 });
 /** 
  * Utilities for handling text inputs.
