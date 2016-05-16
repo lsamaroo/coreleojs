@@ -20,7 +20,7 @@ define(function(require) {
         reset: function(selector) {
             var $el = $(util.idAsSelector(selector));
             $('select', $el).each(function() {
-                select.reset($(this));
+                select.val($(this), '');
             });
             $el[0].reset();
         },

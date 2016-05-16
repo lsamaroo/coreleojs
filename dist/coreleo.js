@@ -949,22 +949,6 @@ define('ui/select',['require','$','util','ui/mobile'],function(require) {
      */
     var module = {
 
-        /**
-         * Resets the select drop down to the first item
-         * 
-         * @param {String} selector the selector of the drop down element
-         * 
-         */
-        reset: function(selector) {
-            var $el = $(util.idAsSelector(selector));
-            if (isSelect2($el)) {
-                $el.select2('data', $el.find('option')[0]);
-                $el.trigger('change.select2');
-            }
-            else {
-                $el.prop('selectedIndex', 0);
-            }
-        },
 
         /**
          * Refreshes the select drop down after items have been added and removed.
@@ -1079,7 +1063,7 @@ define('ui/form',['require','$','util','ui/select','ui/cssConstants'],function(r
         reset: function(selector) {
             var $el = $(util.idAsSelector(selector));
             $('select', $el).each(function() {
-                select.reset($(this));
+                select.val($(this), '');
             });
             $el[0].reset();
         },
