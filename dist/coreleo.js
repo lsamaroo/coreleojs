@@ -594,6 +594,9 @@ define('util',['require','$','lodash','log'],function(require) {
             if (getThis().isEmpty(phone)) {
                 return '';
             }
+            if (phone.length === 11) {
+                return phone.substr(0, 1) + ' (' + phone.substr(1, 3) + ') ' + phone.substr(4, 3) + '-' + phone.substr(7, 4);
+            }
             return '(' + phone.substr(0, 3) + ') ' + phone.substr(3, 3) + '-' + phone.substr(6, 4);
         },
 
